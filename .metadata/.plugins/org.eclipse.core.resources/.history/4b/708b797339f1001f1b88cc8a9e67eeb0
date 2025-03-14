@@ -1,0 +1,73 @@
+package main.metamodel;
+
+public class Transition{
+	private String event;
+    private State target;
+    private String operationVariable;
+    private boolean increment;
+    private boolean decrement;
+    private boolean setOperation;
+    private String conditionVariable;
+    private Integer conditionValue;
+    private ConditionType conditionType;
+
+    public Transition(String event, State target) {
+        this.event = event;
+        this.target = target;
+    }
+	
+	public Object getEvent() {
+		return event;
+	}
+
+	public State getTarget() {
+		return target;
+	}
+
+	public boolean hasSetOperation() {
+		return setOperation;
+	}
+
+	public boolean hasIncrementOperation() {
+		return increment;
+	}
+
+	public boolean hasDecrementOperation() {
+		return decrement;
+	}
+
+	public Object getOperationVariableName() {
+		return operationVariable;
+	}
+
+	public boolean isConditional() {
+		return conditionVariable != null;
+	}
+
+	public Object getConditionVariableName() {
+		return conditionVariable;
+	}
+
+	public Integer getConditionComparedValue() {
+		return conditionValue;
+	}
+
+	public boolean isConditionEqual() {
+		return conditionType == ConditionType.EQUAL;
+	}
+
+	public boolean isConditionGreaterThan() {
+		return conditionType == ConditionType.GREATER;
+	}
+
+	public boolean isConditionLessThan() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean hasOperation() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}

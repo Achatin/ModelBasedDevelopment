@@ -1,0 +1,41 @@
+package main.metamodel;
+
+import java.util.List;
+import java.util.Map;
+
+public class Machine {
+	private List<State> states;
+    private State initialState;
+    private Map<String, State> stateMap;
+    private Map<String, Integer> variables;
+
+    public Machine(List<State> states, State initialState, Map<String, State> stateMap, Map<String, Integer> variables) {
+        this.states = states;
+        this.initialState = initialState;
+        this.stateMap = stateMap;
+        this.variables = variables;
+    }
+
+	public List<State> getStates() {
+		return states;
+	}
+
+	public State getInitialState() {
+		return initialState;
+	}
+
+	public State getState(String stateName) {
+        return states.stream().filter(state -> state.getName().equals(stateName)).findFirst().orElse(null);
+	}
+
+	public int numberOfIntegers() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public boolean hasInteger(String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+}
+

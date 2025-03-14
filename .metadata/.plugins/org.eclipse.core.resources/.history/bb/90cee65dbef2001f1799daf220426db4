@@ -1,0 +1,62 @@
+package main;
+
+import main.metamodel.Machine;
+import main.metamodel.State;
+import main.metamodel.Transition;
+
+public class MachineInterpreter {
+	private Machine machine;
+    private State currentState;
+    private Map<String, Integer> variables;
+	
+    public void run(Machine m) {
+    	this.machine = m;
+        this.currentState = m.getInitialState();
+        this.variables = m.getVariables();
+    }
+
+    public State getCurrentState() {
+    	return currentState;
+    }
+
+    public void processEvent(String string) {
+    	Transition transition = currentState.getTransition(event);
+        if (transition != null && checkCondition(transition)) {
+            executeOperation(transition);
+            currentState = transition.getTargetState();
+        }
+    }
+
+    public int getInteger(String string) {
+    	return variables.getOrDefault(varName, 0);
+    }
+    
+    private boolean checkCondition(Transition transition) {
+        if (transition.hasCondition()) {
+            String varName = transition.getConditionVariable();
+            int varValue = variables.getOrDefault(varName, 0);
+            int conditionValue = transition.getConditionValue();
+            
+            switch (transition.getConditionType()) {
+                case EQUAL: return varValue == conditionValue;
+                case GREATER: return varValue > conditionValue;
+                case LESS: return varValue < conditionValue;
+            }
+        }
+        return true;
+    }
+
+    private void executeOperation(Transition transition) {
+        if (transition.hasOperation()) {
+            String varName = transition.getOperationVariable();
+            int varValue = variables.getOrDefault(varName, 0);
+            
+            switch (transition.getOperationType()) {
+                case SET: variables.put(varName, transition.getOperationValue()); break;
+                case INCREMENT: variables.put(varName, varValue + 1); break;
+                case DECREMENT: variables.put(varName, varValue - 1); break;
+            }
+        }
+    }
+
+}

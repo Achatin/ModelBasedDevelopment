@@ -1,0 +1,39 @@
+package main.metamodel;
+
+import java.util.List;
+
+public class Machine {
+	private List<State> states;
+    private State initialState;
+    private List<String> integerVariables;
+	
+	public Machine(List<State> states, State initialState, List<String> integerVariables) {
+        this.states = states;
+        this.initialState = initialState;
+        this.integerVariables = integerVariables;
+    }
+
+	public List<State> getStates() {
+		return states;
+	}
+
+	public State getInitialState() {
+		return initialState;
+	}
+
+	public State getState(String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int numberOfIntegers() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public boolean hasInteger(String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+}
+

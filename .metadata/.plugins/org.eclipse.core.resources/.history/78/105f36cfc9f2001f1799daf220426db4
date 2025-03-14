@@ -1,0 +1,67 @@
+package main;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import main.metamodel.Machine;
+import main.metamodel.State;
+import main.metamodel.Transition;
+
+public class MachineInterpreter {
+	private Machine machine;
+    private State currentState;
+    private Map<String, Integer> variables;
+	
+    public void run(Machine m) {
+    	this.machine = m;
+        this.currentState = m.getInitialState();
+        this.variables = new HashMap<>();
+    }
+
+    public State getCurrentState() {
+    	return currentState;
+    }
+
+    public void processEvent(String event) {
+    	Transition transition = currentState.getTransitionByEvent(event);
+        if (transition != null && checkCondition(transition)) {
+            executeOperation(transition);
+            currentState = transition.getTarget();
+        }
+    }
+
+    public int getInteger(String varName) {
+    	return variables.getOrDefault(varName, 0);
+    }
+    
+    private boolean checkCondition(Transition transition) {
+        if (transition.isConditional()) {
+            String varName = (String) transition.getConditionVariableName();
+            int varValue = variables.getOrDefault(varName, 0);
+            int conditionValue = transition.getConditionComparedValue();
+            
+            if (transition.isConditionEqual()) return varValue == conditionValue;
+            else if (transition.isConditionGreaterThan()) return varValue > conditionValue;
+            else if (transition.isConditionLessThan()) return varValue < conditionValue;
+            else {
+            	System.out.println("WEIRD CONDITION");
+            	return true;
+            }
+        }
+        return true;
+    }
+
+    private void executeOperation(Transition transition) {
+        if (transition.hasOperation()) {
+            String varName = (String) transition.getOperationVariableName();
+            int varValue = variables.getOrDefault(varName, 0);
+            
+            System.out.println(transition);
+            
+            if (transition.hasSetOperation()) variables.put(varName, transition.getSetValue());
+            if (transition.hasIncrementOperation()) variables.put(varName, varValue + 1);
+            if (transition.hasDecrementOperation()) variables.put(varName, varValue - 1);
+        }
+    }
+
+}

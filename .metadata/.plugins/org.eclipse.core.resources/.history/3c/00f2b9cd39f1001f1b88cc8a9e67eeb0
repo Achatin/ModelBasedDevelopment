@@ -1,0 +1,73 @@
+package main;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import main.metamodel.Machine;
+import main.metamodel.State;
+import main.metamodel.Transition.ConditionType;
+
+public class MachineInterpreter {
+	private Machine machine;
+    private State currentState;
+    private Map<String, Integer> variables;
+	
+    public void run(Machine m) {
+    	this.machine = m;
+        this.currentState = m.getInitialState();
+        this.variables = new HashMap<>();
+        for (String var : m.getIntegerVariables()) {
+            variables.put(var, 0);
+        }
+    }
+
+    public State getCurrentState() {
+    	return this.currentState;
+    }
+
+    public void processEvent(String event) {
+    	Transition transition = currentState.getTransition(event);
+        if (transition != null) {
+            if (transition.hasCondition()) {
+                String varName = transition.getConditionVariable();
+                int varValue = variables.getOrDefault(varName, 0);
+                if (!evaluateCondition(varValue, transition)) {
+                    return;
+                }
+            }
+            executeTransition(transition);
+        }
+
+    }
+    
+    private boolean evaluateCondition(int varValue, Transition transition) {
+        switch (transition.getConditionType()) {
+            case ConditionType.EQUALS:
+                return varValue == transition.getConditionValue();
+            case ConditionType.GREATER_THAN:
+                return varValue > transition.getConditionValue();
+            case ConditionType.LESS_THAN:
+                return varValue < transition.getConditionValue();
+            default:
+                return false;
+        }
+    }
+
+    private void executeTransition(Transition transition) {
+        if (transition.hasSetOperation()) {
+            variables.put(transition.getOperationVariable(), transition.getOperationValue());
+        }
+        if (transition.hasIncrementOperation()) {
+            variables.put(transition.getOperationVariable(), variables.get(transition.getOperationVariable()) + 1);
+        }
+        if (transition.hasDecrementOperation()) {
+            variables.put(transition.getOperationVariable(), variables.get(transition.getOperationVariable()) - 1);
+        }
+        currentState = transition.getTargetState();
+    }
+
+    public int getInteger(String string) {
+    	return variables.getOrDefault(varName, 0);
+    }
+
+}

@@ -1,0 +1,120 @@
+package main;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import main.metamodel.Machine;
+import main.metamodel.State;
+import main.metamodel.Transition;
+
+public class StateMachine {
+	private List<State> states = new ArrayList<>();
+    private State initialState;
+    private Map<String, State> stateMap = new HashMap<>();
+    private State currentState;
+    private Map<String, Integer> variables = new HashMap<>();
+    private String currentEvent;
+
+    public Machine build() {
+        return new Machine(states, initialState, stateMap, variables);
+    }
+    
+    private State createState(String stateName) {
+    	State state = new State(stateName);
+    	states.add(state);
+        stateMap.put(stateName, state);
+        return state;
+    }
+
+    public StateMachine state(String stateName) {
+    	State state;
+    	if (stateMap.containsKey(stateName)) state = stateMap.get(stateName);
+    	else state = createState(stateName);
+        if (currentState == null) currentState = state;
+        else currentState = state;
+        return this;
+    }
+
+    public StateMachine initial() {
+        if (states.isEmpty()) throw new IllegalStateException("No states defined");
+        initialState = currentState;
+        return this;
+    }
+
+    public StateMachine when(String event) {
+        this.currentEvent = event;
+        return this;
+    }
+
+    public StateMachine to(String targetState) {
+    	if (!stateMap.containsKey(targetState)) createState(targetState);
+    	State target = stateMap.get(targetState);
+        Transition transition = new Transition(currentEvent, target);
+        currentState.addTransition(transition);
+        return this;
+    }
+
+	public StateMachine integer(String varName) {
+		variables.put(varName, 0);
+        return this;
+	}
+
+	public StateMachine set(String varName, int value) {
+		List<Transition> transitions = currentState.getTransitions();
+	    if (!transitions.isEmpty()) {
+	        Transition lastTransition = transitions.get(transitions.size() - 1);
+	        lastTransition.setOperation(varName, value);
+	    }
+	    return this;
+	}
+
+	public StateMachine increment(String varName) {
+		List<Transition> transitions = currentState.getTransitions();
+	    if (!transitions.isEmpty()) {
+	        Transition lastTransition = transitions.get(transitions.size() - 1);
+	        lastTransition.incrementOperation(varName);
+	        System.out.println("INCREMNET");
+	        System.out.println(lastTransition);
+	    }
+	    return this;
+	}
+
+	public StateMachine decrement(String varName) {
+		List<Transition> transitions = currentState.getTransitions();
+	    if (!transitions.isEmpty()) {
+	        Transition lastTransition = transitions.get(transitions.size() - 1);
+	        lastTransition.decrementOperation(varName);
+	    }
+	    return this;
+	}
+
+	public StateMachine ifEquals(String varName, int value) {
+		List<Transition> transitions = currentState.getTransitions();
+	    if (!transitions.isEmpty()) {
+	        Transition lastTransition = transitions.get(transitions.size() - 1);
+	        lastTransition.setCondition(varName, value, Transition.ConditionType.EQUAL);
+	    }
+	    return this;
+	}
+
+	public StateMachine ifGreaterThan(String varName, int value) {
+		List<Transition> transitions = currentState.getTransitions();
+	    if (!transitions.isEmpty()) {
+	        Transition lastTransition = transitions.get(transitions.size() - 1);
+	        lastTransition.setCondition(varName, value, Transition.ConditionType.GREATER);
+	    }
+	    return this;
+	}
+
+	public StateMachine ifLessThan(String varName, int value) {
+		List<Transition> transitions = currentState.getTransitions();
+	    if (!transitions.isEmpty()) {
+	        Transition lastTransition = transitions.get(transitions.size() - 1);
+	        lastTransition.setCondition(varName, value, Transition.ConditionType.LESS);
+	    }
+	    return this;
+	}
+
+}

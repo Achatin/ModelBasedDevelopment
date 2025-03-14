@@ -1,0 +1,32 @@
+grammar org.xtext.example.mydsl.PMDSL with org.eclipse.xtext.common.Terminals
+
+generate pMDSL "http://www.xtext.org/example/mydsl/PMDSL"
+
+Model:
+    entities+=Entity*  
+    relations+=Relation*;
+
+Entity:
+    'entity' name=ID '{'
+        attributes+=Attribute*
+    '}';
+
+Attribute:
+    'attribute' name=ID 'as' type=Type;
+
+Type:
+    'number' | 'string' | 'boolean' | 'date' | 'number[]' | 'string[]' | 'boolean[]' | 'date[]' | reference=ID;
+
+Relation:
+    'relations' '{'
+        relationsList+=RelationElement*
+    '}';
+
+RelationElement:
+    entity1=ID cardinality1=Cardinality '-' cardinality2=Cardinality entity2=ID;
+
+Cardinality:
+    '1' | '*' | '1-*' | '1-1';
+
+Variant:
+    'entity' 'Variant' 'extends' reference=ID;

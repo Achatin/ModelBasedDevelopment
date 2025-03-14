@@ -1,0 +1,43 @@
+grammar org.xtext.example.mydsl.PMDSL with org.eclipse.xtext.common.Terminals
+
+generate pMDSL "http://www.xtext.org/example/mydsl/PMDSL"
+
+Model:
+    entities+=Entity*  
+    relations+=Relation*;
+
+Entity:
+    'entity' name=ID '{'
+        attributes+=Attribute*
+    '}';
+
+Attribute:
+    'attribute' name=ID 'as' type=[Type];
+    
+Type:
+    entity=[Entity] | primitive=PrimitiveType;
+
+Relation:
+    'relations' '{'
+        relationsList+=RelationElement*
+    '}';
+
+RelationElement:
+    entity1=ID cardinality1=Cardinality '-' cardinality2=Cardinality entity2=ID;
+
+Cardinality:
+    '1' | '*' | '1-*' | '1-1';
+
+Variant:
+    'entity' 'Variant' 'extends' reference=ID;
+    
+enum PrimitiveType:
+    NUMBER='number' |
+    STRING='string' |
+    BOOLEAN='boolean' |
+    DATE='date' |
+    NUMBER_ARRAY='number[]' |
+    STRING_ARRAY='string[]' |
+    BOOLEAN_ARRAY='boolean[]' |
+    DATE_ARRAY='date[]';
+    

@@ -12,6 +12,9 @@ Made using Xtext. Helps generate lots of boilerplate code for full-stack NextJS 
 - Model is part of dev process ✅
 
 
+> **Edit (Apr 16, 2025)**: Minor changes in DSL. All entities are now 'components' - better semantically for website generator. Removed inheritance and cardinality from this version - has no practical usage.
+
+
 Example use of DSL:
 ```
 component Price {

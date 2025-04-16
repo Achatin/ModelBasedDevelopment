@@ -5,14 +5,16 @@ Made using Xtext. Helps generate lots of boilerplate code for full-stack NextJS 
 **Expectations Checklist**
 - Metamodel and Grammar design ✅
 - Code generation ✅
-- Left recursion (math expression, e.g. if value >= 0.01) ✅
-- Scope, name resolution - backward reference ✅
+- Left recursion ✅
+  - math expression conditions, e.g. if value >= 0.01
+- Scope, name resolution ✅
+  - backward reference - component needs to be first defined, before it can be used as a type
 - Model is part of dev process ✅
 
 
 Example use of DSL:
 ```
-entity Price {
+component Price {
   attribute value as number
   attribute currency as string
   attribute discount as number
@@ -20,7 +22,7 @@ entity Price {
   if value >= 0.01
 }
 
-entity Product {
+component Product {
   attribute id as number
   attribute title as string
   attribute description as string
